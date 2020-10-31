@@ -13,10 +13,10 @@ class ServedDirectory(models.Model):
     The regex pattern can be matched against the file path (False), or just the filename (True).
     """
 
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     path = models.CharField('Directory Path', max_length=260)
     recursive = models.BooleanField('Files Are Matched Recursively', default=False)
-    regex_pattern = models.CharField('RegEx Matching Pattern', max_length=100, default=None)
+    regex_pattern = models.CharField('RegEx Matching Pattern', max_length=100, default='')
     regex = models.BooleanField('Directory RegEx Option', default=False)
     match_filename = models.BooleanField('RegEx Matches Against Filename', default=True)
 
