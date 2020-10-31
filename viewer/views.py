@@ -1,10 +1,9 @@
-import mimetypes
 import os
 
 from django.http import FileResponse
 from django.shortcuts import render, get_object_or_404
 
-from viewer.helpers import get_mediatype
+from viewer.helpers import extra_listdir
 from viewer.models import ServedDirectory
 
 
@@ -20,12 +19,9 @@ def browse(request, directory_id):
     dir = get_object_or_404(ServedDirectory, id=directory_id)
 
     if os.path.isdir(dir.path):
-        files = [
-            (file, get_mediatype(mimetypes.guess_type(file)[0])) for file in os.listdir(dir.path)
-        ]
         context = {
             'title': f'Browse - {os.path.dirname(dir.path)}',
-            'files': files,
+            'files': extra_listdir(dir.path),
             'directory': dir
         }
         return render(request, 'browse.html', context)
