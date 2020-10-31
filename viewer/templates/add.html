@@ -22,7 +22,7 @@
                     <div class="field">
                         <label class="label">Directory</label>
                         <div class="control has-icons-left has-icons-right">
-                            <input class="input" type="text" name="path" required placeholder="Full Path">
+                            <input class="input" type="text" name="path" required placeholder="Full Path"  {% if path_prefill %}value="{{ path_prefill }}"{% endif %}>
                             <span class="icon is-small is-left">
                                 <i class="fas fa-folder-open"></i>
                             </span>
