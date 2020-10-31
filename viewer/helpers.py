@@ -1,5 +1,5 @@
 import os
-from typing import Tuple, List
+from typing import List, Tuple
 
 
 def extra_listdir(path: str) -> List[Tuple[str, str]]:
@@ -9,7 +9,14 @@ def extra_listdir(path: str) -> List[Tuple[str, str]]:
     :param path: The path to the directory.
     :return: A list of tuples, each containing two strings, the file or directory name, and the media type.
     """
-    return [(file, get_all_mediatype(file, path)) for file in os.listdir(path)]
+    files = []
+    for file in os.listdir(path):
+        mediatype = get_all_mediatype(file, path)
+        if mediatype == 'folder':
+            files.append((file, mediatype, os.path.join(path, file)))
+        else:
+            files.append((file, mediatype))
+    return files
 
 
 def get_all_mediatype(head: str, tail: str) -> str:

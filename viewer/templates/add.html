@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="card">
+        <header class="card-header">
+            <p class="card-header-title">
+                Add New Directory
+            </p>
+        </header>
+        <div class="card-content">
+            <div class="content">
+                <p>
+                    Adds a new Directory to be served by the server.
+                    <br>
+                    If specified, a <a href="https://en.wikipedia.org/wiki/Regular_expression#Syntax">RegEx pattern</a> can be used to filter files and will only display the ones you want.
+                    <br>
+                    RegEx patterns can be configured below to match against the entire path or just the filename.
+                    <br>
+                    Additionally, files can be matched <i>recursively</i> if you so wish. Please note that this functionality may create anomalous behavior around duplicate files.
+                </p>
+                <form action="{% url 'add_submit' %}" method="post">
+                    {% csrf_token %}
+                    <div class="field">
+                        <label class="label">Directory</label>
+                        <div class="control has-icons-left has-icons-right">
+                            <input class="input" type="text" name="path" required placeholder="Full Path"  {% if path_prefill %}value="{{ path_prefill }}"{% endif %}>
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-folder-open"></i>
+                            </span>
+                        </div>
+                        <p class="help">
+                            We recommend that you use a full path. Do not escape the path or use a relative path for best results.
+                        </p>
+                    </div>
+                    <div class="field">
+                        <label class="label">Filter Files</label>
+                        <div class="control has-icons-left has-icons-right">
+                            <input class="input" type="text" name="regex" placeholder="RegEx Pattern">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-search"></i>
+                            </span>
+                        </div>
+                        <p class="help">
+                            This is optional. Do not enter anything if you wish to disable RegEx matching and simply add all files.
+                        </p>
+                    </div>
+                    <label class="checkbox pt-1 pb-3 pr-3">
+                        <input type="checkbox" name="match_filename">
+                        Match Against Filename?
+                    </label>
+                    <label class="checkbox pt-1 pb-3 pr-3">
+                        <input type="checkbox" name="recursive">
+                        Recursively Match
+                    </label>
+
+                    <div class="field">
+                        <div class="control">
+                            <button class="button is-link">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
