@@ -1,6 +1,6 @@
 import os
 
-from django.http import FileResponse
+from django.http import FileResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404
 
 from viewer.helpers import extra_listdir
@@ -54,3 +54,11 @@ def file(request, directory_id, file):
         )
     }
     return render(request, 'message.html', context, status=500)
+
+
+def add(request):
+    return render(request, 'add.html', {'title': 'Add New Directory'})
+
+
+def submit_new(request):
+    return HttpResponse('')
