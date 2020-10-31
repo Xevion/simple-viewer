@@ -2,9 +2,9 @@
 {% block content %}
     <div class="panel">
         <div class="panel-heading">
-            Files
+            {{ directory.path }}
             <span style="font-weight: 400; font-style: italic; font-size: 70%;">
-                {{ files|length }}
+                {{ files|length }} files
             </span>
             <span style="vertical-align: middle;" class="panel-icon">
                 <a href="{% url 'index' %}">

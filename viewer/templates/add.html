@@ -17,7 +17,7 @@
                     <br>
                     Additionally, files can be matched <i>recursively</i> if you so wish. Please note that this functionality may create anomalous behavior around duplicate files.
                 </p>
-                <form action="{% url 'add_submit' %}">
+                <form action="{% url 'add_submit' %}" method="post">
                     {% csrf_token %}
                     <div class="field">
                         <label class="label">Directory</label>
