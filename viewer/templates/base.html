@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {% block head %}
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>{{ title }}</title>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+        {% endblock head %}
+    </head>
+    <body class="has-navbar-fixed-top">
+        <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
+            <div class="navbar-menu">
+                <div class="navbar-start">
+                    <a class="navbar-item" href="{% url 'index' %}">
+                        Index
+                    </a>
+                </div>
+
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <span class="icon">
+                            <i class="fas fa-plus"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <div class="columns is-centered my-5">
+            <div class="column is-two-thirds">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
+        <script defer src="https://use.fontawesome.com/releases/v5.14.0/js/all.js"></script>
+    </body>
+</html>

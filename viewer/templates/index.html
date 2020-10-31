@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block head %}
+    {{ block.super }}
+    <style>
+        .panel-icon {
+            margin-right: 1em;
+        }
+    </style>
+{% endblock head %}
+{% block content %}
+    <div class="panel">
+        <div class="panel-heading">Directories</div>
+        {% for served_directory in directories %}
+            <div class="panel-block">
+                        <span class="panel-icon">
+                            <i class="fas fa-folder fa-lg" aria-hidden="true"></i>
+                        </span>
+                <a href="{% url 'browse' served_directory.id %}">
+                    {{ served_directory.path }}
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock content %}
