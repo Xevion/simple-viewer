@@ -1,5 +1,52 @@
 {% extends 'base.html' %}
+{% block head %}
+    {{ block.super }}
+    <style>
+        .media {
+            width: 100%;
+        {#height: 3em;#}
+        }
+
+        .media .media-filename {
+            text-decoration: underline;
+            text-decoration-color: #3273dc;
+        }
+    </style>
+{% endblock head %}
 {% block content %}
+    <div class="card">
+        <div class="card-header">
+            <p class="card-header-title">
+                {{ directory.path }}
+                <span class="pl-1" style="font-weight: 400; font-style: italic; font-size: 70%;">
+                    {{ files|length }} files
+                </span>
+            </p>
+        </div>
+        <div class="card-content">
+            <div class="content">
+                {% for directory in directories %}
+                <div>
+
+                </div>
+
+                {% endfor %}
+                {% for file in files %}
+                    <div class="media">
+                        {% load thumbnail %}
+                        <img class="px-2" src="{{ file.fullpath|thumbnail_url:'small' }}">
+{#                        <img class="px-2" src="https://picsum.photos/200/130?random={{ file.0 }}">#}
+                        <span class="media-filename">
+                            <a href="{% url 'file' directory.id file.filename %}">
+                                {{ file.filename }}
+                            </a>
+                        </span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
     <div class="panel">
         <div class="panel-heading">
             {{ directory.path }}
@@ -15,16 +62,15 @@
         {% for file in files %}
             <div class="panel-block">
                         <span class="panel-icon pr-4">
-                            <i class="fas fa-{{ file.1 }} fa-lg" aria-hidden="true"></i>
+{#                            <i class="fas fa-{{ file }} fa-lg" aria-hidden="true"></i>#}
                         </span>
                 {% if file.1 == 'folder' %}
-                    <a href="{% url 'add' %}?path={{ file.2 }}">
-                        {{ file.0 }}
+                    <a href="{% url 'add' %}?path={{ file.fullpath }}">
+                        {{ file.filename }}
                     </a>
                 {% else %}
-                    <a href="{% url 'file' directory.id file.0 %}">
-                        {{ file.0 }}
-                        {{ file.0 }}
+                    <a href="{% url 'file' directory.id file.filename %}">
+                        {{ file.filename }}
                     </a>
                 {% endif %}
             </div>
