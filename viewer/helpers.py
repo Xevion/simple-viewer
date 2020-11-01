@@ -1,42 +1,28 @@
-import os
-from typing import List, Tuple
+"""
+helpers.py
+
+Contains helper functions used as refactored shortcuts or in order to separate code for readability.
+"""
+import cv2
+from PIL import Image
 
 
-def extra_listdir(path: str) -> List[Tuple[str, str]]:
+def generate_thumbnail(path: str, output_path: str) -> None:
     """
-    Helper function used for identifying file media type for every file in a given directory, extending os.listdir
+    Helper function which completes the process of generating thumbnails for both pictures and videos.
 
-    :param path: The path to the directory.
-    :return: A list of tuples, each containing two strings, the file or directory name, and the media type.
+    :param path: The absolute path to the file.
+    :param output_path: The absolute path to the intended output thumbnail file.
     """
-    files = []
-    for file in os.listdir(path):
-        mediatype = get_all_mediatype(file, path)
-        if mediatype == 'folder':
-            files.append((file, mediatype, os.path.join(path, file)))
-        else:
-            files.append((file, mediatype))
-    return files
+    vidcap = cv2.VideoCapture(path)
+    success, image = vidcap.read()
+    if success:
+        img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        im_pil = Image.fromarray(img)
 
+        # Resize, crop, thumbnail
+        im_pil.thumbnail((300, 300))
+        # im_pil.crop((0, 0, 200, 66))
+        # im_pil.resize((200, 66))
 
-def get_all_mediatype(head: str, tail: str) -> str:
-    """
-    A extra media type function supporting directories on top of files.
-
-    :param head: The head of the path, usually the directory name or filename at the very end.
-    :param tail: The rest of the path, everything that comes before the head.
-    :return: A media type in string form.
-    """
-    if os.path.isfile(os.path.join(tail, head)):
-        return get_file_mediatype(head)
-    return "folder"
-
-
-def get_file_mediatype(mimetype: str) -> str:
-    """Simple media type categorization based on the given mimetype"""
-    if mimetype is not None:
-        if mimetype.startswith('image'):
-            return 'image'
-        elif mimetype.startswith('video'):
-            return 'video'
-    return 'file'
+        im_pil.save(output_path)
