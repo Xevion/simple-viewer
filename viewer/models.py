@@ -1,4 +1,3 @@
-import json
 import mimetypes
 import os
 import uuid
@@ -43,7 +42,7 @@ class ServedDirectory(models.Model):
                 entry = self.files.filter(filename__exact=file).first()
                 if entry is None:
                     # create the file entry
-                    entry = File.create(full_path=file_path)
+                    entry = File.create(full_path=file_path, parent=self)
                     entry.save()
             else:
                 # directory found, remember it
@@ -51,7 +50,6 @@ class ServedDirectory(models.Model):
 
         # Dump subdirectories found
         self.known_subdirectories = directories
-
 
     def __str__(self):
         return self.path
@@ -64,13 +62,13 @@ class File(models.Model):
     directory = models.ForeignKey(ServedDirectory, on_delete=models.CASCADE, related_name='files')
 
     @classmethod
-    def create(cls, full_path: str) -> 'File':
+    def create(cls, full_path: str, parent: ServedDirectory) -> 'File':
         """Simple shortcut for creating a File database entry with just the path."""
         return File(
             path=full_path,
             filename=os.path.basename(full_path),
             mediatype=File.get_mediatype(full_path),
-            directory=os.path.dirname(full_path)
+            directory=parent
         )
 
     def get_url(self, directory: ServedDirectory) -> str:

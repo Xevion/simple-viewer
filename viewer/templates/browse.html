@@ -21,6 +21,11 @@
                 <span class="pl-1" style="font-weight: 400; font-style: italic; font-size: 70%;">
                     {{ files|length }} files
                 </span>
+                <span class="icon">
+                    <a href="{% url 'refresh' directory.id %}">
+                        <i class="fas fa-sync"></i>
+                    </a>
+                </span>
             </p>
         </div>
         <div class="card-content">
