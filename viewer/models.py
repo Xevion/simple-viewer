@@ -1,7 +1,9 @@
+import json
 import mimetypes
 import os
 import uuid
 
+import jsonfield
 from django.db import models
 from django.urls import reverse
 from easy_thumbnails.alias import aliases
@@ -26,16 +28,30 @@ class ServedDirectory(models.Model):
     regex_pattern = models.CharField('RegEx Matching Pattern', max_length=100, default='')
     regex = models.BooleanField('Directory RegEx Option', default=False)
     match_filename = models.BooleanField('RegEx Matches Against Filename', default=True)
+    known_subdirectories = jsonfield.JSONField('Tracked Subdirectories JSON', default=[])
 
     def refresh(self):
         """Refresh the directory listing to see if any new files have appeared and add them to the list."""
+        # TODO: Implement separate recursive file matching implementation
+        # TODO: Implement RegEx filtering step
+        directories = []
         for file in os.listdir(self.path):
-            # Check if the file has been entered before
-            entry = self.files.filter(filename__exact=file).first()
-            if entry is None:
-                # create the file entry
-                entry = File.create(full_path=os.path.join(self.path, file))
-                entry.save()
+            file_path = os.path.join(self.path, file)
+
+            if os.path.isfile(file_path):
+                # Check if the file has been entered before
+                entry = self.files.filter(filename__exact=file).first()
+                if entry is None:
+                    # create the file entry
+                    entry = File.create(full_path=file_path)
+                    entry.save()
+            else:
+                # directory found, remember it
+                directories.append(file_path)
+
+        # Dump subdirectories found
+        self.known_subdirectories = directories
+
 
     def __str__(self):
         return self.path
