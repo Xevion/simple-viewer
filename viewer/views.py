@@ -4,7 +4,7 @@ from django.http import FileResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
-from viewer.models import ServedDirectory
+from viewer.models import ServedDirectory, File
 
 
 def index(request):
@@ -93,3 +93,11 @@ def submit_new(request):
                                'message': 'The directory you specified was not a valid directory, either it doesn\'t '
                                           'exist or it isn\'t a directory.'})
     return HttpResponseRedirect(reverse('browse', args=(s.id,)))
+
+
+def generate_thumb(request, directory_id, file: str):
+    """View for regenerating a thumbnail for a specific file."""
+    directory = get_object_or_404(ServedDirectory, id=directory_id)
+    file = directory.files.filter(filename=file).first()
+    file.generate_thumbnail()
+    return HttpResponseRedirect(reverse('browse', args=(directory.id,)))
