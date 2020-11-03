@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block head %}
+    {{ block.super }}
+    <style>
+        .card {
+            top: 50%;
+        }
+
+        .card-content {
+            padding: 1.25rem;
+        }
+    </style>
+{% endblock head %}
+{% block content %}
+    <div class="card">
+        <header class="card-header">
+            <p class="card-header-title">
+                Confirm Deletion
+            </p>
+            <a href="#" class="card-header-icon" aria-label="more options">
+              <span class="icon">
+                <i class="fas fa-angle-down" aria-hidden="true"></i>
+              </span>
+            </a>
+        </header>
+        <div class="card-content">
+            <div class="content">
+                <p>
+                    Are you sure you want to remove this directory from the file server?
+                </p>
+            </div>
+        </div>
+        <footer class="card-footer">
+            <a href="{% url 'index' %}" class="card-footer-item">Cancel</a>
+            <a href="{% url 'confirm_delete' directory.id %}" class="card-footer-item">Delete</a>
+        </footer>
+    </div>
+{% endblock content %}

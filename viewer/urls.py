@@ -8,6 +8,8 @@ urlpatterns = [
     path('add/submit', views.submit_new, name='add_submit'),
     path('<uuid:directory_id>/', views.browse, name='browse'),
     path('<uuid:directory_id>/refresh', views.refresh, name='refresh'),
+    path('<uuid:directory_id>/delete/', views.delete, name='delete'),
+    path('<uuid:directory_id>/delete/confirm', views.confirm_delete, name='confirm_delete'),
     path('<uuid:directory_id>/<str:file>/', views.file, name='file'),
     path('<uuid:directory_id>/<str:file>/generate', views.generate_thumb, name='generate_thumb'),
 

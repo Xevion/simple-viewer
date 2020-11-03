@@ -4,7 +4,7 @@ from django.http import FileResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
-from viewer.models import ServedDirectory, File
+from viewer.models import ServedDirectory
 
 
 def index(request):
@@ -101,3 +101,24 @@ def generate_thumb(request, directory_id, file: str):
     file = directory.files.filter(filename=file).first()
     file.generate_thumbnail()
     return HttpResponseRedirect(reverse('browse', args=(directory.id,)))
+
+
+def confirm_delete(request, directory_id):
+    directory = get_object_or_404(ServedDirectory, id=directory_id)
+
+    # Delete all the file thumbnail's, then files from db
+    for file in directory.files.all():
+        file.delete_thumbnail()
+        file.delete()
+
+    # Remove directory from db
+    directory.delete()
+
+    return HttpResponseRedirect(reverse('index'))
+
+
+def delete(request, directory_id):
+    directory = get_object_or_404(ServedDirectory, id=directory_id)
+    context = {'content_column_size': 'is-one-third',
+               'directory': directory}
+    return render(request, 'delete.html', context=context)
