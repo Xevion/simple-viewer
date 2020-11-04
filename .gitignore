@@ -1,6 +1,8 @@
 # Repository specific
 .idea/**
 viewer/static/thumbnails/**
+viewer/static/css/*.css
+viewer/static/css/*.css.map
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
