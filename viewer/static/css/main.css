@@ -501,6 +501,16 @@ a.box:active {
   border-color: transparent;
   box-shadow: none;
 }
+.button.is-ghost {
+  background: none;
+  border-color: transparent;
+  color: #3273dc;
+  text-decoration: none;
+}
+.button.is-ghost:hover, .button.is-ghost.is-hovered {
+  color: #3273dc;
+  text-decoration: underline;
+}
 .button.is-white {
   background-color: white;
   border-color: transparent;
@@ -3746,8 +3756,16 @@ a.tag:hover {
   box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.02);
   color: #4a4a4a;
   max-width: 100%;
-  overflow: hidden;
   position: relative;
+}
+
+.card-footer:first-child, .card-content:first-child, .card-header:first-child {
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
+}
+.card-footer:last-child, .card-content:last-child, .card-header:last-child {
+  border-bottom-left-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
 }
 
 .card-header {
@@ -3780,6 +3798,14 @@ a.tag:hover {
 .card-image {
   display: block;
   position: relative;
+}
+.card-image:first-child img {
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
+}
+.card-image:last-child img {
+  border-bottom-left-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
 }
 
 .card-content {
@@ -5862,6 +5888,7 @@ label.panel-block:hover {
 }
 .columns.is-mobile > .column.is-narrow {
   flex: none;
+  width: unset;
 }
 .columns.is-mobile > .column.is-full {
   flex: none;
@@ -6024,6 +6051,7 @@ label.panel-block:hover {
 @media screen and (max-width: 768px) {
   .column.is-narrow-mobile {
     flex: none;
+    width: unset;
   }
   .column.is-full-mobile {
     flex: none;
@@ -6187,6 +6215,7 @@ label.panel-block:hover {
 @media screen and (min-width: 769px), print {
   .column.is-narrow, .column.is-narrow-tablet {
     flex: none;
+    width: unset;
   }
   .column.is-full, .column.is-full-tablet {
     flex: none;
@@ -6350,6 +6379,7 @@ label.panel-block:hover {
 @media screen and (max-width: 1023px) {
   .column.is-narrow-touch {
     flex: none;
+    width: unset;
   }
   .column.is-full-touch {
     flex: none;
@@ -6513,6 +6543,7 @@ label.panel-block:hover {
 @media screen and (min-width: 1024px) {
   .column.is-narrow-desktop {
     flex: none;
+    width: unset;
   }
   .column.is-full-desktop {
     flex: none;
@@ -6676,6 +6707,7 @@ label.panel-block:hover {
 @media screen and (min-width: 1216px) {
   .column.is-narrow-widescreen {
     flex: none;
+    width: unset;
   }
   .column.is-full-widescreen {
     flex: none;
@@ -6839,6 +6871,7 @@ label.panel-block:hover {
 @media screen and (min-width: 1408px) {
   .column.is-narrow-fullhd {
     flex: none;
+    width: unset;
   }
   .column.is-full-fullhd {
     flex: none;
@@ -7054,7 +7087,7 @@ label.panel-block:hover {
   margin-left: calc(-1 * var(--columnGap));
   margin-right: calc(-1 * var(--columnGap));
 }
-.columns.is-variable .column {
+.columns.is-variable > .column {
   padding-left: var(--columnGap);
   padding-right: var(--columnGap);
 }
@@ -8153,6 +8186,7 @@ a.has-text-danger-dark:hover, a.has-text-danger-dark:focus {
 
 .is-clickable {
   cursor: pointer !important;
+  pointer-events: all !important;
 }
 
 .is-clipped {
