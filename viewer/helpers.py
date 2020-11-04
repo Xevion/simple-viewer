@@ -37,4 +37,4 @@ def get_resolution(path: str) -> Tuple[int, int]:
     :return: A tuple containing two positive integers representing width and height
     """
     file = cv2.VideoCapture(path)
-    return file.get(cv2.CAP_PROP_FRAME_HEIGHT), file.get(cv2.CAP_PROP_FRAME_WIDTH)
+    return file.get(cv2.CAP_PROP_FRAME_WIDTH), file.get(cv2.CAP_PROP_FRAME_HEIGHT)

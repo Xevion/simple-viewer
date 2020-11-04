@@ -29,7 +29,7 @@
                     Are you sure you want to remove this directory from the file server?
                     <br>
                     {% load humanize %}
-                    <code>{{ directory.path }}</code> contains {{ num_files|intcomma }} files.
+                    <a href="{% url 'browse' directory.id %}"><code>{{ directory.path }}</code></a> contains {{ num_files|intcomma }} files.
                 </p>
             </div>
         </div>

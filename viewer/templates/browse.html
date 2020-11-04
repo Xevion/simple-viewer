@@ -6,31 +6,93 @@
             width: 100%;
         }
 
+        .media b, span, a, p {
+            padding: 0 3px;
+        }
+
         .media .media-filename {
             text-decoration: underline;
             text-decoration-color: #3273dc;
+        }
+
+        .media .media-fileid {
+            color: #9ee8ff;
+        }
+
+        .flex-container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: flex-end;
+            align-content: stretch;
+            align-items: flex-start;
+        }
+
+        .flex-container div:nth-child(1) {
+            order: 0;
+            flex: 1 1 auto;
+            align-self: auto;
+        }
+
+        .flex-container div:nth-child(2) {
+            order: 1;
+            flex: 0 1 auto;
+            align-self: auto;
+        }
+
+        .flex-container div:nth-child(3) {
+            order: 2;
+            flex: 0 1 auto;
+            align-self: auto;
+        }
+
+        .directory-info {
+            white-space: nowrap;
+        }
+
+        .file-count {
+            font-weight: 400; font-style: italic; font-size: 70%;
+        }
+
+        .action-set {
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-around;
+            align-content: stretch;
+            align-items: center;
+            padding: 0 0.5rem;
+        }
+
+        .card .icon a {
+            color: #c4edff;
+        }
+
+        .card .icon a:hover {
+            color: #ffffff;
         }
     </style>
 {% endblock head %}
 {% block content %}
     <div id="browse" class="card">
         <div class="card-header">
-            <div class="is-flex is-align-content-end" style="width: 100%;">
-                <div>
+            <div class="flex-container" style="width: 100%;">
+                <div class="directory-info">
                     <p class="card-header-title">
                         {{ directory.path }}
+                        <span class="pl-1 file-count">
+                            {{ files|length }} files
+                        </span>
                     </p>
-                    <span class="pl-1" style="font-weight: 400; font-style: italic; font-size: 70%;">
-                        {{ files|length }} files
-                    </span>
                 </div>
-                <div style="vertical-align: middle;">
-                    <span class="icon">
+                <div class="action-set">
+                    <span class="action icon">
                         <a href="{% url 'index' %}">
                             <i class="fas fa-arrow-up" aria-hidden="true"></i>
                         </a>
                     </span>
-                    <span class="icon">
+                    <span class="action icon">
                         <a href="{% url 'refresh' directory.id %}">
                             <i class="fas fa-sync"></i>
                         </a>
@@ -52,13 +114,27 @@
 
                 {% endfor %}
                 {% for file in files %}
-                    <div class="media">
+                    <div id="file-{{ file.id }}" class="media">
                         {% load static %}
-                        <img class="px-2" loading="lazy" src="{% static file.thumbnail_static_path %}">
+                        <div class="image-placeholder mx-2"
+                             style="min-width: {{ file.thumbnailResolution.y }}px; min-height: {{ file.thumbnailResolution.y }}px;">
+                            <img loading="lazy" width="{{ file.thumbnailResolution.x }}" height="{{ file.thumbnailResolution.y }}" src="{% static file.thumbnail_static_path %}">
+                        </div>
+                        <a href="#file-{{ file.id }}">
+                            <b class="media-fileid">{{ file.id }}</b>
+                        </a>
                         <span class="media-filename">
                             <a href="{% url 'file' directory.id file.filename %}">
                                 {{ file.filename }}
                             </a>
+                        </span>
+                        <span class="media-resolution">
+                            {{ file.resolution }}
+                        </span>
+                        <span class="media-size">
+                            <i>
+                                {{ file.human_size }}
+                            </i>
                         </span>
                     </div>
                 {% endfor %}
