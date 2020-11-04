@@ -74,8 +74,8 @@ class ImageResolution(models.Model):
     A simple model for storing the dimensions of a specific image. A tuple, in essence.
     """
 
-    x = models.PositiveIntegerField()
-    y = models.PositiveIntegerField()
+    x = models.PositiveIntegerField(null=True)
+    y = models.PositiveIntegerField(null=True)
 
     def set(self, size: Tuple[int, int]) -> None:
         """Sets the X and Y attributes"""
@@ -117,8 +117,15 @@ class File(models.Model):
             path=full_path,
             filename=os.path.basename(full_path),
             mediatype=File.get_mediatype(full_path),
-            directory=parent
+            directory=parent,
+            resolution=ImageResolution(),
+            thumbnailResolution=ImageResolution()
         )
+
+        # Save references to ImageResolution objects
+        file.resolution.save()
+        file.thumbnailResolution.save()
+
         if refresh:
             file.refresh()
         return file
