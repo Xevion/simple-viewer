@@ -2,10 +2,12 @@ import mimetypes
 import os
 import uuid
 from datetime import datetime
+from typing import Tuple
 
 import jsonfield
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from easy_thumbnails.alias import aliases
 
 from viewer import helpers
@@ -64,6 +66,7 @@ class ServedDirectory(models.Model):
 
         # Dump subdirectories found
         self.known_subdirectories = directories
+        self.save()
 
     def __str__(self):
         return self.path
@@ -76,6 +79,11 @@ class ImageDimensions(models.Model):
 
     x = models.PositiveIntegerField()
     y = models.PositiveIntegerField()
+
+    def set(self, size: Tuple[int, int]) -> None:
+        """Sets the X and Y attributes"""
+        self.x, self.y = size
+        self.save()
 
 
 class File(models.Model):
@@ -110,20 +118,33 @@ class File(models.Model):
 
     def refresh(self) -> None:
         """Refresh this file's metadata"""
+        self.lastRefreshed = timezone.now()
 
-        if not self.thumbnail:
-            self.generate_thumbnail()
-
-        # Check the fileLastModified
         fileLastModified = datetime.fromtimestamp(os.path.getmtime(self.path))
-        if fileLastModified != self.fileLastModified:
-            self.generate_thumbnail()
+        updated = fileLastModified != self.fileLastModified
+        self.fileLastModified = fileLastModified
+
+        # thumbnail regeneration logic
+        if self.mediatype == 'image' or self.mediatype == 'video':
+            # if the file modification time changed, regenerate it
+            if updated:
+                self.generate_thumbnail(regenerate=True)
+            # if the thumbnail hasn't been generated, attempt to generate it
+            elif not self.thumbnail:
+                self.generate_thumbnail()
+
+        if updated:
+            self.size.set(helpers.get_resolution())
+            self.thumbnailSize.set(helpers.get_resolution())
+
+        self.save()
 
     def get_url(self, directory: ServedDirectory) -> str:
         """Retrieve the direct URL for a given file."""
         return reverse('file', args=(directory.id, self.filename))
 
     def delete_thumbnail(self) -> None:
+        """Delete the thumbnail for this File if it exists and forget the filename."""
         if self.thumbnail:
             try:
                 os.remove(os.path.join(self.thumbs_dir, self.thumbnail))
@@ -143,10 +164,22 @@ class File(models.Model):
         return os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static', 'thumbnails')
 
     def generate_thumbnail(self, regenerate=False) -> None:
+        """
+        Generates a new thumbnail for a given image or video file.
+        Will not generate thumbnails if the thumbnail already exists.
+
+        :param regenerate: Generate the thumbnail even if the thumbnail already exists.
+        """
         #  TODO: Add django-background-task scheduling
 
-        self.delete_thumbnail()
+        # Only generate again if regenerate is True, make sure to delete old thumbnail file
+        if self.thumbnail:
+            if not regenerate:
+                return
+            else:
+                self.delete_thumbnail()
 
+        # Name the thumbnail a random UUID and remember it
         thumb_file = f'{uuid.uuid4()}.jpeg'
         self.thumbnail = thumb_file
 
