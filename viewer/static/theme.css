@@ -8,7 +8,7 @@ html, body {
 
 .panel-heading {
     background-color: #17a0cd;
-    color: #ffffff;
+    color: white;
 }
 
 .panel {
@@ -27,18 +27,18 @@ html, body {
     color: #ffffff;
 }
 
-.panel-icon {
-    color: #0b87ac;
+.panel-icon, .icon {
+    color: #11a3cf;
+}
+
+.icon a {
+    color: inherit;
 }
 
 .navbar {
     background-color: #0c5167;
     color: white;
     font-family: 'Open Sans', sans-serif;
-}
-
-.navbar-item {
-    color: white;
 }
 
 .navbar-brand .navbar-item {
@@ -58,14 +58,81 @@ html, body {
     color: inherit;
 }
 
-.card {
-    background-color: #0a556d;
-}
 
 .card-header {
     background-color: #17a0cd;
 }
 
-.card-header-title {
+.card {
+    background-color: #0a556d;
+}
+
+.card-footer {
+    border-top-color: rgba(207, 245, 255, 0.5);
+}
+
+.card-footer-item:not(:last-child) {
+    border-right-color: rgba(207, 245, 255, 0.5);
+}
+
+.card-footer-item {
+    background-color: #0c6988;
+}
+
+a {
+    color: #38c8f8;
+}
+
+a:hover {
+    color: #a4e6ff;
+}
+
+.checkbox {
     color: white;
+}
+
+.checkbox:hover {
+    color: #a4e6ff;
+}
+
+a.card-footer-item {
+    color: #c9f2ff;
+}
+
+a.card-footer-item:hover {
+    color: white;
+}
+
+.navbar-item, p, .label, .card-header-title {
+    color: white;
+}
+
+.media + .media {
+    border-top-color: #a4e6ff;
+}
+
+#browse.card .card-content {
+    padding: 0;
+}
+
+.content .media {
+    padding: 0 0.5rem;
+}
+
+.card .media:not(:last-child) {
+    margin: 1.5rem 0;
+}
+
+.icon {
+    vertical-align: middle;
+}
+
+.delete-icon {
+    text-align: right;
+    float: right;
+    display: inline-block;
+}
+
+.delete-icon .icon {
+    color: #d63b3b;
 }
