@@ -120,5 +120,6 @@ def confirm_delete(request, directory_id):
 def delete(request, directory_id):
     directory = get_object_or_404(ServedDirectory, id=directory_id)
     context = {'content_column_size': 'is-one-third',
+               'num_files': len(directory.files.all()),
                'directory': directory}
     return render(request, 'delete.html', context=context)

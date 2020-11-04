@@ -27,6 +27,9 @@
             <div class="content">
                 <p>
                     Are you sure you want to remove this directory from the file server?
+                    <br>
+                    {% load humanize %}
+                    <code>{{ directory.path }}</code> contains {{ num_files|intcomma }} files.
                 </p>
             </div>
         </div>

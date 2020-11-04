@@ -136,3 +136,8 @@ a.card-footer-item:hover {
 .delete-icon .icon {
     color: #d63b3b;
 }
+
+code {
+    background-color: #bcf6ff;
+    color: #033343;
+}
