@@ -4,6 +4,7 @@ import uuid
 from datetime import datetime
 from typing import Tuple
 
+import humanize
 import jsonfield
 from django.db import models
 from django.urls import reverse
@@ -72,7 +73,7 @@ class ServedDirectory(models.Model):
         return self.path
 
 
-class ImageDimensions(models.Model):
+class ImageResolution(models.Model):
     """
     A simple model for storing the dimensions of a specific image. A tuple, in essence.
     """
@@ -103,8 +104,9 @@ class File(models.Model):
 
     fileLastModified = models.DateTimeField()
     lastRefreshed = models.DateTimeField()
-    size = models.OneToOneField(ImageDimensions, on_delete=models.CASCADE)
-    thumbnailSize = models.OneToOneField(ImageDimensions, on_delete=models.CASCADE)
+    size = models.PositiveIntegerField()
+    resolution = models.OneToOneField(ImageResolution, on_delete=models.CASCADE)
+    thumbnailResolution = models.OneToOneField(ImageResolution, on_delete=models.CASCADE)
 
     @classmethod
     def create(cls, full_path: str, parent: ServedDirectory) -> 'File':
@@ -134,8 +136,9 @@ class File(models.Model):
                 self.generate_thumbnail()
 
         if updated:
-            self.size.set(helpers.get_resolution())
-            self.thumbnailSize.set(helpers.get_resolution())
+            self.resolution.set(helpers.get_resolution(self.path))
+            self.thumbnailResolution.set(helpers.get_resolution(self.__thumbs_path))
+            self.size = os.path.getsize(self.path)
 
         self.save()
 
@@ -147,13 +150,17 @@ class File(models.Model):
         """Delete the thumbnail for this File if it exists and forget the filename."""
         if self.thumbnail:
             try:
-                os.remove(os.path.join(self.thumbs_dir, self.thumbnail))
+                os.remove(self.__thumbs_path)
             except FileNotFoundError:
                 pass
             finally:
                 self.thumbnail = None
                 self.save()
 
+    @property
+    def human_size(self) -> str:
+        """returns a human readable interpretation of the size of this file"""
+        return humanize.naturalsize(self.size)
 
     @property
     def thumbnail_static_path(self):
@@ -161,9 +168,15 @@ class File(models.Model):
         return f'/thumbnails/{self.thumbnail}'
 
     @property
-    def thumbs_dir(self):
+    def __thumbs_dir(self) -> str:
         """A string path to the directory containing thumbnails."""
         return os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static', 'thumbnails')
+
+    @property
+    def __thumbs_path(self) -> str:
+        """A string path to the thumbnail file."""
+        if self.thumbnail:
+            return os.path.join(self.__thumbs_dir, self.thumbnail)
 
     def generate_thumbnail(self, regenerate=False) -> None:
         """
@@ -187,7 +200,7 @@ class File(models.Model):
 
         # Generate thumbnail
         try:
-            helpers.generate_thumbnail(self.path, os.path.join(self.thumbs_dir, self.thumbnail))
+            helpers.generate_thumbnail(self.path, self.__thumbs_path)
         except Exception:
             print(f'Could not thumbnail: {self.filename}')
             self.delete_thumbnail()
