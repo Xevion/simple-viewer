@@ -1,6 +1,7 @@
 import mimetypes
 import os
 import uuid
+from datetime import datetime
 
 import jsonfield
 from django.db import models
@@ -25,33 +26,38 @@ class ServedDirectory(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     path = models.CharField('Directory Path', max_length=260)
+
     recursive = models.BooleanField('Files Are Matched Recursively', default=False)
     regex_pattern = models.CharField('RegEx Matching Pattern', max_length=100, default='')
     regex = models.BooleanField('Directory RegEx Option', default=False)
     match_filename = models.BooleanField('RegEx Matches Against Filename', default=True)
     known_subdirectories = jsonfield.JSONField('Tracked Subdirectories JSON', default=[])
 
+    lastModified = models.DateTimeField(auto_now=True)
+    lastRefreshed = models.DateTimeField()
+    initialCreation = models.DateTimeField(auto_now_add=True)
+
     def refresh(self):
         """Refresh the directory listing to see if any new files have appeared and add them to the list."""
         # TODO: Implement separate recursive file matching implementation
         # TODO: Implement RegEx filtering step
         directories = []
-        files = os.listdir(self.path)
-        for i, file in enumerate(files):
-            print(f'{i} / {len(files)}')
-            file_path = os.path.join(self.path, file)
+        filenames = os.listdir(self.path)
+
+        for i, filename in enumerate(filenames):
+            file_path = os.path.join(self.path, filename)
 
             if os.path.isfile(file_path):
                 # Check if the file has been entered before
-                entry: File
-                entry = self.files.filter(filename__exact=file).first()
-                if entry is None:
+                file: File
+                file = self.files.filter(filename__exact=filename).first()
+
+                if file is None:
                     # create the file entry
-                    entry = File.create(full_path=file_path, parent=self)
-                    entry.save()
+                    file = File.create(full_path=file_path, parent=self)
+                    file.save()
                 else:
-                    if entry.thumbnail is None:
-                        entry.generate_thumbnail()
+                    file.refresh()
             else:
                 # directory found, remember it
                 directories.append(file_path)
@@ -63,12 +69,34 @@ class ServedDirectory(models.Model):
         return self.path
 
 
+class ImageDimensions(models.Model):
+    """
+    A simple model for storing the dimensions of a specific image. A tuple, in essence.
+    """
+
+    x = models.PositiveIntegerField()
+    y = models.PositiveIntegerField()
+
+
 class File(models.Model):
+    """
+    A File object of course represents a singular File inside the directory.
+    This table stores all the required metadata and paths to ensure
+    """
+
     path = models.CharField('Full Filepath', max_length=300)
     filename = models.CharField('Filename', max_length=160)
     mediatype = models.CharField('Mediatype', max_length=30)
     directory = models.ForeignKey(ServedDirectory, on_delete=models.CASCADE, related_name='files')
     thumbnail = models.CharField('Thumbnail Filename', max_length=160, null=True, default=None)
+
+    lastModified = models.DateTimeField(auto_now=True)
+    initialCreation = models.DateTimeField(auto_now_add=True)
+
+    fileLastModified = models.DateTimeField()
+    lastRefreshed = models.DateTimeField()
+    size = models.OneToOneField(ImageDimensions, on_delete=models.CASCADE)
+    thumbnailSize = models.OneToOneField(ImageDimensions, on_delete=models.CASCADE)
 
     @classmethod
     def create(cls, full_path: str, parent: ServedDirectory) -> 'File':
@@ -79,6 +107,17 @@ class File(models.Model):
             mediatype=File.get_mediatype(full_path),
             directory=parent
         )
+
+    def refresh(self) -> None:
+        """Refresh this file's metadata"""
+
+        if not self.thumbnail:
+            self.generate_thumbnail()
+
+        # Check the fileLastModified
+        fileLastModified = datetime.fromtimestamp(os.path.getmtime(self.path))
+        if fileLastModified != self.fileLastModified:
+            self.generate_thumbnail()
 
     def get_url(self, directory: ServedDirectory) -> str:
         """Retrieve the direct URL for a given file."""
@@ -94,16 +133,16 @@ class File(models.Model):
                 pass
 
     @property
-    def thumbnail_url(self):
-        if self.thumbnail:
-            return f'/thumbnails/{self.thumbnail}'
-        return ''
+    def thumbnail_static_path(self):
+        """Used for accessing the thumbnail via the static URL"""
+        return f'/thumbnails/{self.thumbnail}'
 
     @property
     def thumbs_dir(self):
+        """A string path to the directory containing thumbnails."""
         return os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static', 'thumbnails')
 
-    def generate_thumbnail(self) -> None:
+    def generate_thumbnail(self, regenerate=False) -> None:
         #  TODO: Add django-background-task scheduling
 
         self.delete_thumbnail()
