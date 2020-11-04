@@ -26,9 +26,9 @@
 
                 <div class="navbar-end">
                     <div class="navbar-item">
-                        <span class="icon">
+                        <span class="icon pr-5">
                             <a href="{% url 'add' %}">
-                                <i class="fas fa-plus"></i>
+                                <i class="fas fa-plus fa-lg"></i>
                             </a>
                         </span>
                     </div>
@@ -36,7 +36,7 @@
             </div>
         </nav>
         <div class="columns is-centered my-5">
-            <div class="column is-two-thirds">
+            <div class="column {{ content_column_size|default:"is-two-thirds" }}">
                 {% block content %}
                 {% endblock %}
             </div>
