@@ -9,12 +9,8 @@ import jsonfield
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
-from easy_thumbnails.alias import aliases
 
 from viewer import helpers
-
-if not aliases.get('small'):
-    aliases.set('small', {'size': (150, 80), 'crop': True})
 
 
 class ServedDirectory(models.Model):
@@ -37,7 +33,7 @@ class ServedDirectory(models.Model):
     known_subdirectories = jsonfield.JSONField('Tracked Subdirectories JSON', default=[])
 
     lastModified = models.DateTimeField(auto_now=True)
-    lastRefreshed = models.DateTimeField()
+    lastRefreshed = models.DateTimeField(default=timezone.now)
     initialCreation = models.DateTimeField(auto_now_add=True)
 
     def refresh(self):
@@ -69,7 +65,7 @@ class ServedDirectory(models.Model):
         self.known_subdirectories = directories
         self.save()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.path
 
 
@@ -86,6 +82,9 @@ class ImageResolution(models.Model):
         self.x, self.y = size
         self.save()
 
+    def __str__(self) -> str:
+        return f'{self.x} x {self.y}'
+
 
 class File(models.Model):
     """
@@ -101,22 +100,28 @@ class File(models.Model):
 
     lastModified = models.DateTimeField(auto_now=True)
     initialCreation = models.DateTimeField(auto_now_add=True)
+    lastRefreshed = models.DateTimeField(default=timezone.now)
 
-    fileLastModified = models.DateTimeField()
-    lastRefreshed = models.DateTimeField()
-    size = models.PositiveIntegerField()
-    resolution = models.OneToOneField(ImageResolution, on_delete=models.CASCADE)
-    thumbnailResolution = models.OneToOneField(ImageResolution, on_delete=models.CASCADE)
+    fileLastModified = models.DateTimeField(null=True, default=None)
+    size = models.PositiveIntegerField(null=True)
+    resolution = models.OneToOneField(ImageResolution, on_delete=models.CASCADE, related_name='file', null=True)
+    thumbnailResolution = models.OneToOneField(ImageResolution, on_delete=models.CASCADE, related_name='real_file', null=True)
 
     @classmethod
-    def create(cls, full_path: str, parent: ServedDirectory) -> 'File':
-        """Simple shortcut for creating a File database entry with just the path."""
-        return File(
+    def create(cls, full_path: str, parent: ServedDirectory, refresh: bool = True) -> 'File':
+        """
+        Simple shortcut for creating a File database entry with just the path.
+        Refreshes the file after creation.
+        """
+        file = File(
             path=full_path,
             filename=os.path.basename(full_path),
             mediatype=File.get_mediatype(full_path),
             directory=parent
         )
+        if refresh:
+            file.refresh()
+        return file
 
     def refresh(self) -> None:
         """Refresh this file's metadata"""
@@ -163,7 +168,7 @@ class File(models.Model):
         return humanize.naturalsize(self.size)
 
     @property
-    def thumbnail_static_path(self):
+    def thumbnail_static_path(self) -> str:
         """Used for accessing the thumbnail via the static URL"""
         return f'/thumbnails/{self.thumbnail}'
 
