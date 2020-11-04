@@ -148,10 +148,12 @@ class File(models.Model):
         if self.thumbnail:
             try:
                 os.remove(os.path.join(self.thumbs_dir, self.thumbnail))
-                self.thumbnail = None
-                self.save()
             except FileNotFoundError:
                 pass
+            finally:
+                self.thumbnail = None
+                self.save()
+
 
     @property
     def thumbnail_static_path(self):
