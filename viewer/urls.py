@@ -11,6 +11,5 @@ urlpatterns = [
     path('<uuid:directory_id>/delete/', views.delete, name='delete'),
     path('<uuid:directory_id>/delete/confirm', views.confirm_delete, name='confirm_delete'),
     path('<uuid:directory_id>/<str:file>/', views.file, name='file'),
-    path('<uuid:directory_id>/<str:file>/generate', views.generate_thumb, name='generate_thumb'),
-
+    path('<uuid:directory_id>/<str:file>/generate', views.generate_thumb, name='generate_thumb')
 ]
