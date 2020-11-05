@@ -16,23 +16,31 @@
 {% block content %}
     <div class="panel">
         <div class="panel-heading">Directories</div>
-        {% for served_directory in directories %}
-            <div class="panel-block">
-                <span class="panel-icon">
-                    <i class="fas fa-folder fa-lg" aria-hidden="true"></i>
-                </span>
-                <a href="{% url 'browse' served_directory.id %}">
-                    {{ served_directory.path }}
-                    {% if served_directory.regex %}
-                        <span class="tag is-info">Filtered</span>
-                    {% endif %}
-                </a>
-                <a href="{% url 'delete' served_directory.id %}" class="delete-icon">
-                    <span class="icon">
-                        <i class="fas fa-times fa-lg" aria-hidden="true"></i>
+        {% if directories|length > 0 %}
+            {% for served_directory in directories %}
+                <div class="panel-block">
+                    <span class="panel-icon">
+                        <i class="fas fa-folder fa-lg" aria-hidden="true"></i>
                     </span>
-                </a>
+                    <a href="{% url 'browse' served_directory.id %}">
+                        {{ served_directory.path }}
+                        {% if served_directory.regex %}
+                            <span class="tag is-info">Filtered</span>
+                        {% endif %}
+                    </a>
+                    <a href="{% url 'delete' served_directory.id %}">
+                        <span class="icon has-text-danger">
+                            <i class="fas fa-times fa-lg" aria-hidden="true"></i>
+                        </span>
+                    </a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="panel-block">
+                <p>
+                    No directories available.
+                </p>
             </div>
-        {% endfor %}
+        {% endif %}
     </div>
 {% endblock content %}
