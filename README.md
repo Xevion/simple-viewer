@@ -8,6 +8,14 @@ Planned are text files, source code files, PDFs, and pictures. Everything else w
 
 The project will be built in Django (as well as HTML/CSS/JS), my first ever project in the framework, so expect poorer standards, mishaps, some complex bugs (resolved with needlessly complex solutions) and such.
 
+## Screenshots
+
+![Screenshot: Viewing the directory index](./screenshot_index.png)
+
+![Screenshot: Browsing a directory](./screenshot_browse.png)
+
+![Screenshot: Adding a directory](./screenshot_add.png)
+
 ## Setup
 
 ```
