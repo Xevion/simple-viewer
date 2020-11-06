@@ -11,10 +11,14 @@ The project will be built in Django (as well as HTML/CSS/JS), my first ever proj
 ## Screenshots
 
 ![Screenshot: Viewing the directory index](./screenshot_index.png)
+<p align="center">Viewing the index, showing all available directories</p>
 
 ![Screenshot: Browsing a directory](./screenshot_browse.png)
+<p align="center">Browsing a directory with thumbnails and file information</p>
 
 ![Screenshot: Adding a directory](./screenshot_add.png)
+<p align="center">The Add Directory dialog</p>
+
 
 ## Setup
 
