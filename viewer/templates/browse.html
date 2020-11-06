@@ -7,17 +7,6 @@
         .file-count {
             font-weight: 400; font-style: italic; font-size: 70%;
         }
-
-        .action-set {
-            height: 100%;
-            display: flex;
-            flex-direction: row;
-            flex-wrap: nowrap;
-            justify-content: space-around;
-            align-content: stretch;
-            align-items: center;
-            padding: 0 0.5rem;
-        }
     </style>
 {% endblock head %}
 {% block content %}
@@ -32,13 +21,13 @@
                         </span>
                     </p>
                 </div>
-                <div class="action-set">
-                    <span class="action icon">
+                <div class="icon-set">
+                    <span class="icon">
                         <a href="{% url 'index' %}">
                             <i class="fas fa-arrow-up" aria-hidden="true"></i>
                         </a>
                     </span>
-                    <span class="action icon">
+                    <span class="icon">
                         <a href="{% url 'refresh' directory.id %}">
                             <i class="fas fa-sync"></i>
                         </a>

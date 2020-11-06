@@ -4,21 +4,27 @@
         <div class="panel-heading">Directories</div>
         {% if directories|length > 0 %}
             {% for served_directory in directories %}
-                <div class="panel-block is-flex">
-                    <span class="panel-icon is-align-self-flex-start">
+                <div class="panel-block">
+                    <span class="panel-icon">
                         <i class="fas fa-folder fa-lg" aria-hidden="true"></i>
                     </span>
-                    <a href="{% url 'browse' served_directory.id %}" class="is-align-self-flex-end">
-                        {{ served_directory.path }}
-                        {% if served_directory.regex %}
-                            <span class="tag is-primary">Filtered</span>
-                        {% endif %}
-                    </a>
-                    <a href="{% url 'delete' served_directory.id %}">
-                        <span class="icon has-text-danger">
-                            <i class="fas fa-times fa-lg" aria-hidden="true"></i>
-                        </span>
-                    </a>
+                    <div class="flex-container">
+                        <div>
+                            <a href="{% url 'browse' served_directory.id %}" class="is-align-self-flex-end">
+                                {{ served_directory.path }}
+                            </a>
+                            {% if served_directory.regex %}
+                                <span class="tag is-primary ml-3 mr-2">Filtered</span>
+                            {% endif %}
+                        </div>
+                        <div class="icon-set">
+                                <span class="icon">
+                                    <a class="has-text-danger" href="{% url 'delete' served_directory.id %}">
+                                        <i class="fas fa-times fa-lg" aria-hidden="true"></i>
+                                    </a>
+                                </span>
+                        </div>
+                    </div>
                 </div>
             {% endfor %}
         {% else %}
