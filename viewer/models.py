@@ -1,5 +1,6 @@
 import mimetypes
 import os
+import traceback
 import uuid
 from datetime import datetime
 from typing import Tuple
@@ -8,9 +9,15 @@ import humanize
 import jsonfield
 from django.db import models
 from django.urls import reverse
+from dateutil.tz import tzlocal
 from django.utils import timezone
 
 from viewer import helpers
+
+try:
+    os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static', 'thumbnails'))
+except FileExistsError:
+    pass
 
 
 class ServedDirectory(models.Model):
@@ -105,7 +112,8 @@ class File(models.Model):
     fileLastModified = models.DateTimeField(null=True, default=None)
     size = models.PositiveIntegerField(null=True)
     resolution = models.OneToOneField(ImageResolution, on_delete=models.CASCADE, related_name='file', null=True)
-    thumbnailResolution = models.OneToOneField(ImageResolution, on_delete=models.CASCADE, related_name='real_file', null=True)
+    thumbnailResolution = models.OneToOneField(ImageResolution, on_delete=models.CASCADE, related_name='real_file',
+                                               null=True)
 
     @classmethod
     def create(cls, full_path: str, parent: ServedDirectory, refresh: bool = True) -> 'File':
@@ -134,7 +142,7 @@ class File(models.Model):
         """Refresh this file's metadata"""
         self.lastRefreshed = timezone.now()
 
-        fileLastModified = datetime.fromtimestamp(os.path.getmtime(self.path))
+        fileLastModified = datetime.fromtimestamp(os.path.getmtime(self.path), tz=tzlocal())
         updated = fileLastModified != self.fileLastModified
         self.fileLastModified = fileLastModified
 
@@ -214,6 +222,7 @@ class File(models.Model):
         try:
             helpers.generate_thumbnail(self.path, self.__thumbs_path)
         except Exception:
+            traceback.print_exc()
             print(f'Could not thumbnail: {self.filename}')
             self.delete_thumbnail()
 

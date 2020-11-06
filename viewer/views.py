@@ -82,6 +82,7 @@ def submit_new(request):
         if not os.path.isdir(request.POST['path']):
             raise ValueError('A invalid Directory was specified in the request.')
         s.save()
+        s.refresh()
     except KeyError:
         return render(request, 'message.html', status=403,
                       context={'title': 'Invalid Options',
