@@ -6,7 +6,7 @@
 $primary: hsl(163, 100%, 49%);
 $link: hsl(163, 100%, 49%);
 $link-hover: findDarkColor($link);
-$body-background-color: $black-bis;
+$body-background-color: hsl(0, 0%, 9%);
 $code-background: $grey-darker;
 $code: $link;
 
@@ -92,5 +92,30 @@ html, body {
 
   .media-fileid {
     color: $link;
+  }
+}
+
+.panel {
+  background: darken($body-background-color, 2.5%);
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  align-content: stretch;
+  align-items: flex-start;
+
+  div {
+    align-self: auto;
+  }
+
+  div:nth-child(1) {
+    flex: 1 1 auto;
+  }
+
+  div:nth-child(2), div:nth-child(3) {
+    flex: 0 1 auto;
   }
 }

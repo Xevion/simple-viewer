@@ -57,7 +57,8 @@ def file(request, directory_id, file):
 
 
 def add(request):
-    context = {'title': 'Add New Directory'}
+    context = {'title': 'Add New Directory',
+               'content_column_size': 'is-half'}
     if 'path' in request.GET.keys():
         context['path_prefill'] = request.GET['path']
     return render(request, 'add.html', context)

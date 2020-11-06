@@ -2,32 +2,7 @@
 {% block head %}
     {{ block.super }}
     <style>
-        .flex-container {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: nowrap;
-            justify-content: flex-end;
-            align-content: stretch;
-            align-items: flex-start;
-        }
 
-        .flex-container div:nth-child(1) {
-            order: 0;
-            flex: 1 1 auto;
-            align-self: auto;
-        }
-
-        .flex-container div:nth-child(2) {
-            order: 1;
-            flex: 0 1 auto;
-            align-self: auto;
-        }
-
-        .flex-container div:nth-child(3) {
-            order: 2;
-            flex: 0 1 auto;
-            align-self: auto;
-        }
 
         .file-count {
             font-weight: 400; font-style: italic; font-size: 70%;
@@ -96,7 +71,7 @@
                         </a>
                         <span class="media-filename">
                             <a href="{% url 'file' directory.id file.filename %}">
-                                {{ file.filename }}
+                                /{{ file.filename }}
                             </a>
                         </span>
                         <span class="media-resolution">
