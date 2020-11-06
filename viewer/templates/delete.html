@@ -17,18 +17,23 @@
             <p class="card-header-title">
                 Confirm Deletion
             </p>
-            <a href="#" class="card-header-icon" aria-label="more options">
+            <span class="card-header-icon has-text-primary">
               <span class="icon">
-                <i class="fas fa-angle-down" aria-hidden="true"></i>
+                <i class="fas fa-question" aria-hidden="true"></i>
               </span>
-            </a>
+            </span>
         </header>
         <div class="card-content">
             <div class="content">
                 <p>
                     Are you sure you want to remove this directory from the file server?
                     {% load humanize %}
-                    <a href="{% url 'browse' directory.id %}"><code>{{ directory.path }}</code></a> contains <b class="has-text-primary">{{ num_files|intcomma }}</b> files.
+                    <a href="{% url 'browse' directory.id %}"><code>{{ directory.path }}</code></a> contains <b
+                        class="has-text-primary">{{ num_files|intcomma }}</b> files.
+                    <p class="help my-0">
+                        Note: This does <b>not</b> delete any of your files. This will only clear the thumbnail cache
+                        and database of associated files.
+                    </p>
                 </p>
             </div>
         </div>
