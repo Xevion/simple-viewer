@@ -19,6 +19,25 @@ The project will be built in Django (as well as HTML/CSS/JS), my first ever proj
 ![Screenshot: Adding a directory](./screenshot_add.png)
 <p align="center">The Add Directory dialog</p>
 
+## Features
+
+- Filterable directories with options for recursive file finding
+    - Directories can be anywhere the application has read access to
+- UUID4 based directory URLs
+- Fast video and picture thumbnailing
+- Sleek dark theme with neon turquoise primary
+
+## To-do
+
+- Directory sorting
+- Javascript based image/video hover to view
+- Real-time websockets to view background thumbnailing processes
+- Better multi-viewport support through Bulma
+- Better icon alignment using Flexbox
+- Better font choices
+- Fixup Django project organization issues
+    - Ensure all submission URLs use Forms & POST
+- Better non-media support for files in directory listings
 
 ## Setup
 
