@@ -1,31 +1,17 @@
 {% extends 'base.html' %}
-{% block head %}
-    {{ block.super }}
-    <style>
-        .panel-icon {
-            margin-right: 1em;
-        }
-
-        .tag:not(body) {
-            font-size: 0.7rem;
-            line-height: 1.3;
-            padding: 0 0.6em;
-        }
-    </style>
-{% endblock head %}
 {% block content %}
     <div class="panel">
         <div class="panel-heading">Directories</div>
         {% if directories|length > 0 %}
             {% for served_directory in directories %}
-                <div class="panel-block">
-                    <span class="panel-icon">
+                <div class="panel-block is-flex">
+                    <span class="panel-icon is-align-self-flex-start">
                         <i class="fas fa-folder fa-lg" aria-hidden="true"></i>
                     </span>
-                    <a href="{% url 'browse' served_directory.id %}">
+                    <a href="{% url 'browse' served_directory.id %}" class="is-align-self-flex-end">
                         {{ served_directory.path }}
                         {% if served_directory.regex %}
-                            <span class="tag is-info">Filtered</span>
+                            <span class="tag is-primary">Filtered</span>
                         {% endif %}
                     </a>
                     <a href="{% url 'delete' served_directory.id %}">

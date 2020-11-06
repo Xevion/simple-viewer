@@ -27,9 +27,8 @@
             <div class="content">
                 <p>
                     Are you sure you want to remove this directory from the file server?
-                    <br>
                     {% load humanize %}
-                    <a href="{% url 'browse' directory.id %}"><code>{{ directory.path }}</code></a> contains {{ num_files|intcomma }} files.
+                    <a href="{% url 'browse' directory.id %}"><code>{{ directory.path }}</code></a> contains <b class="has-text-primary">{{ num_files|intcomma }}</b> files.
                 </p>
             </div>
         </div>

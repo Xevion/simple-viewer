@@ -2,23 +2,6 @@
 {% block head %}
     {{ block.super }}
     <style>
-        .media {
-            width: 100%;
-        }
-
-        .media b, span, a, p {
-            padding: 0 3px;
-        }
-
-        .media .media-filename {
-            text-decoration: underline;
-            text-decoration-color: #3273dc;
-        }
-
-        .media .media-fileid {
-            color: #9ee8ff;
-        }
-
         .flex-container {
             display: flex;
             flex-direction: row;
@@ -46,10 +29,6 @@
             align-self: auto;
         }
 
-        .directory-info {
-            white-space: nowrap;
-        }
-
         .file-count {
             font-weight: 400; font-style: italic; font-size: 70%;
         }
@@ -63,14 +42,6 @@
             align-content: stretch;
             align-items: center;
             padding: 0 0.5rem;
-        }
-
-        .card .icon a {
-            color: #c4edff;
-        }
-
-        .card .icon a:hover {
-            color: #ffffff;
         }
     </style>
 {% endblock head %}
